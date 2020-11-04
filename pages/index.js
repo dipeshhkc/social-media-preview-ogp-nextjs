@@ -1,15 +1,8 @@
 import Head from 'next/head';
-import React,{useState,useEffect} from "react"
+import React from 'react';
 
-export default function Home() {
-  const [photo, setPhoto] = useState();
 
-  useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/photos/1')
-      .then((response) => response.json())
-      .then((json) => setPhoto(json));
-  }, []);
-
+const Home=({photo})=> {
   return (
     <div>
       <Head>
@@ -25,11 +18,23 @@ export default function Home() {
         />
         <meta property="og:image" content={photo?.url} />
       </Head>
-      <h2>
-        {photo?.title}
-      </h2>
+      <h2>{photo?.title}</h2>
     </div>
   );
 }
+export default Home
 
+export const getServerSideProps = async () => {
+  let photo = null;
+  await fetch('https://jsonplaceholder.typicode.com/photos/1')
+    .then((response) => response.json())
+    .then((json) =>{
+      photo=json
+    })
 
+  return {
+    props: {
+      photo,
+    },
+  };
+};
